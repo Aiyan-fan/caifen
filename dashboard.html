@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>材份 · 教学看板</title>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<div class="aurora" style="opacity:.55"><i></i><i></i><i></i></div>
+
+<nav class="nav solid" id="nav">
+  <div class="brand">
+    <span class="mark"></span>
+    <div><b>材份</b><br><span>CAI FEN · 教学看板</span></div>
+  </div>
+  <div class="links">
+    <a href="index.html">工作台</a>
+    <a href="dougong.html">拆装</a>
+    <a href="dashboard.html">看板</a>
+  </div>
+</nav>
+
+<main class="wrap board">
+  <div class="hd">
+    <div>
+      <span class="label">Teaching Dashboard</span>
+      <h1>教学看板</h1>
+    </div>
+    <p id="srcNote">数据来源：本机记录 · 无记录时展示演示样本</p>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><span>累计练习</span><b><i data-to="128" data-dec="0" id="m1">0</i><i>人次</i></b><p>三种铺作合计</p></div>
+    <div class="metric"><span>平均用时</span><b><i data-to="2.8" data-dec="1" id="m2">0</i><i>分</i></b><p>十字科为主</p></div>
+    <div class="metric"><span>平均误操作</span><b><i data-to="1.6" data-dec="1" id="m3">0</i><i>次</i></b><p>顺序错误为主</p></div>
+    <div class="metric"><span>平均得分</span><b><i data-to="86" data-dec="0" id="m4">0</i><i>分</i></b><p>百分制</p></div>
+  </div>
+
+  <div class="grid2">
+    <div class="box">
+      <h3>最易错构件 · 百人次卡顿次数</h3>
+      <p class="note">学生在哪一步停下来，就是课堂上要重点讲的那一件。</p>
+      <div class="bars">
+        <div class="bar-row"><span>慢拱</span><span class="track"><i data-w="88" style="width:0"></i></span><em>42</em></div>
+        <div class="bar-row"><span>瓜子拱</span><span class="track"><i data-w="66" style="width:0"></i></span><em>31</em></div>
+        <div class="bar-row"><span>华拱</span><span class="track"><i data-w="58" style="width:0"></i></span><em>28</em></div>
+        <div class="bar-row"><span>交互斗</span><span class="track"><i data-w="46" style="width:0"></i></span><em>22</em></div>
+        <div class="bar-row"><span>令拱</span><span class="track"><i data-w="40" style="width:0"></i></span><em>19</em></div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>三档铺作 · 完成率</h3>
+      <p class="note">同一批使用者依次挑战的通过情况。</p>
+      <div class="bars">
+        <div class="bar-row"><span>一斗三升</span><span class="track"><i data-w="92" style="width:0"></i></span><em>92%</em></div>
+        <div class="bar-row"><span>十字科</span><span class="track"><i data-w="76" style="width:0"></i></span><em>76%</em></div>
+        <div class="bar-row"><span>重拱</span><span class="track"><i data-w="41" style="width:0"></i></span><em>41%</em></div>
+      </div>
+      <p class="note" style="margin-top:22px">
+        重拱通过率骤降，原因集中在“慢拱需要两只散斗同时落位”——这是课堂上最值得展开的一分钟。
+      </p>
+    </div>
+  </div>
+
+  <div class="box" style="margin-top:14px">
+    <h3>最近练习记录</h3>
+    <p class="note" id="tblNote">演示样本 · 实际使用后显示本机记录</p>
+    <table>
+      <thead>
+        <tr><th>时间</th><th>铺作</th><th>用时</th><th>误操作</th><th>得分</th></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</main>
+
+<footer class="wrap">
+  <span>材份 · 教学看板 · 本地数据，不上传</span>
+  <a href="index.html">返回工作台 →</a>
+</footer>
+
+<script>
+(function () {
+  var PRESET = { dousan: '一斗三升', shizi: '十字科', chonggong: '重拱' };
+  function fmt(ms) {
+    var s = Math.round(ms / 1000);
+    return ('0' + Math.floor(s / 60)).slice(-2) + ':' + ('0' + (s % 60)).slice(-2);
+  }
+  var recs = [];
+  try { recs = JSON.parse(localStorage.getItem('cai_records') || '[]'); } catch (e) { recs = []; }
+
+  var demo = [
+    { ts: Date.now() - 1000 * 60 * 26, preset: 'chonggong', ms: 214000, errors: 3, score: 74 },
+    { ts: Date.now() - 1000 * 60 * 52, preset: 'shizi', ms: 148000, errors: 1, score: 91 },
+    { ts: Date.now() - 1000 * 60 * 90, preset: 'shizi', ms: 176000, errors: 2, score: 84 },
+    { ts: Date.now() - 1000 * 60 * 140, preset: 'dousan', ms: 61000, errors: 0, score: 98 },
+    { ts: Date.now() - 1000 * 60 * 190, preset: 'chonggong', ms: 262000, errors: 4, score: 68 },
+    { ts: Date.now() - 1000 * 60 * 240, preset: 'dousan', ms: 72000, errors: 1, score: 94 }
+  ];
+
+  var list = recs.length ? recs.slice(-6).reverse() : demo;
+  var isDemo = !recs.length;
+
+  if (recs.length) {
+    var n = recs.length;
+    var avgMs = recs.reduce(function (a, r) { return a + r.ms; }, 0) / n;
+    var avgErr = recs.reduce(function (a, r) { return a + r.errors; }, 0) / n;
+    var avgScore = recs.reduce(function (a, r) { return a + (r.score || 0); }, 0) / n;
+    document.getElementById('srcNote').textContent = '数据来源：本机记录（' + n + ' 条），不上传服务器';
+    document.getElementById('tblNote').textContent = '本机记录 · ' + n + ' 条';
+    var m = [
+      [document.getElementById('m1'), n], [document.getElementById('m2'), avgMs / 60000],
+      [document.getElementById('m3'), avgErr], [document.getElementById('m4'), avgScore]
+    ];
+    m.forEach(function (p) {
+      p[0].dataset.to = p[1];
+      p[0].dataset.dec = (p[1] % 1 === 0) ? 0 : 1;
+    });
+  }
+
+  var tb = document.getElementById('rows');
+  list.forEach(function (r) {
+    var d = new Date(r.ts);
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + ('0' + d.getMonth()).slice(-2) + '/' + ('0' + d.getDate()).slice(-2) +
+      ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + '</td>' +
+      '<td>' + (PRESET[r.preset] || r.preset) + '</td>' +
+      '<td>' + fmt(r.ms) + '</td>' +
+      '<td>' + r.errors + '</td>' +
+      '<td class="hi">' + (r.score || '—') + '</td>';
+    tb.appendChild(tr);
+  });
+
+  if (isDemo) document.getElementById('srcNote').textContent = '演示样本 · 尚无本机记录（练习后自动切换为真实数据）';
+})();
+</script>
+<script src="js/fx.js"></script>
+</body>
+</html>

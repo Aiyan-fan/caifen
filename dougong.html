@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>材份 · 拆装</title>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body class="app">
+
+<div class="topbar">
+  <div class="l">
+    <a class="back" href="index.html" title="返回工作台">←</a>
+    <div class="title"><b>材份</b><span>斗拱参数化拆装 · 宋《营造法式》</span></div>
+  </div>
+
+  <div class="tabs">
+    <button data-preset="dousan">一斗三升</button>
+    <button data-preset="shizi">十字科</button>
+    <button data-preset="chonggong">重拱</button>
+  </div>
+
+  <div class="r">
+    <div class="stats">
+      <div>用时<b id="time">00:00</b></div>
+      <div>进度<b class="gold" id="prog">0 / 0</b></div>
+      <div>误操作<b id="err">0</b></div>
+    </div>
+    <button class="mini" id="btnAbout">背景</button>
+    <button class="mini primary" id="btnAuto">自动演示</button>
+    <button class="mini" id="btnReset">重新拆开</button>
+  </div>
+</div>
+
+<main id="stage"></main>
+
+<aside class="panel parts">
+  <div class="ph"><span>构件清单</span><b id="stageSub">—</b></div>
+  <div class="list" id="list"></div>
+</aside>
+
+<aside class="panel gen">
+  <div class="ph"><span>生成器 · 材份参数</span><b id="stageTitle">—</b></div>
+  <div class="body">
+    <div class="ctl">
+      <div class="lb"><span>出跳（分）</span><i id="chuOut">30 分</i></div>
+      <input type="range" id="chu" min="22" max="38" step="1" value="30">
+    </div>
+    <div class="ctl">
+      <div class="lb"><span>拱长系数</span><i id="gsOut">1.00×</i></div>
+      <input type="range" id="gs" min="0.88" max="1.14" step="0.02" value="1">
+    </div>
+    <div class="ctl">
+      <div class="lb"><span>斗口深（分）</span><i id="kouOut">10 分</i></div>
+      <input type="range" id="kou" min="8" max="12" step="1" value="10">
+    </div>
+    <label class="switch"><span>足材（拱高 21 分）</span><input type="checkbox" id="zucai"></label>
+  </div>
+</aside>
+
+<aside class="panel info">
+  <div class="ph"><span>构件档案</span><b>宋式 / 清式</b></div>
+  <div class="body" id="info"></div>
+</aside>
+
+<div class="hintbar">
+  <div class="bar"><i id="progBar"></i></div>
+  <div class="txt" id="hint">按住构件，沿轴线拖动，对准虚影松手</div>
+</div>
+
+<div id="toast"></div>
+
+<div id="about">
+  <div class="card3">
+    <span class="label">About · 关于这朵斗拱</span>
+    <h3>不用一钉一铆，怎么把屋檐挑起来</h3>
+    <p class="lead3">
+      斗拱是中国木构建筑里柱子与屋檐之间的传力构件。它靠<b>榫卯咬合</b>与<b>层层出跳</b>，
+      把屋顶的重量一级一级收拢到柱身上；同时决定了屋檐能向外探多远、檐口有多陡。
+      这一朵叫「十字科」，是一朵斗拱最基本的形态。
+    </p>
+    <div class="grid3">
+      <div>
+        <b>材份</b>
+        <p>宋《营造法式》以「材」为模数：材高十五分、厚十分。所有构件的尺寸都是「分」的整数倍——斗拱不是捏出来的，是算出来的。</p>
+      </div>
+      <div>
+        <b>工序</b>
+        <p>先立栌斗，再上泥道拱与华拱，然后一只只落斗，最后压下昂。顺序错了，上面的构件就没有支点，装不上去。</p>
+      </div>
+      <div>
+        <b>在这里</b>
+        <p>按住构件，沿它真实的装入方向拖动，对准虚影松手即可落位。装错顺序会被拦下，并告诉你先装哪一件。</p>
+      </div>
+    </div>
+    <div class="row3">
+      <span>拖动旋转 · 滚轮缩放 · 右上角可切换铺作与材份参数</span>
+      <button class="mini primary" id="btnStart">开始装配 →</button>
+    </div>
+  </div>
+</div>
+
+<div id="done">
+  <div class="card2">
+    <h3>装配完成</h3>
+    <div class="sub2">一栌斗、两拱、五斗 —— 一朵斗拱的受力体系</div>
+    <div class="kv">
+      <div><span>用时</span><b data-ms>00:00</b></div>
+      <div><span>误操作</span><b data-err>0</b></div>
+      <div><span>得分</span><b data-score>0</b></div>
+    </div>
+    <ul>
+      <li>栌斗开十字口，纵横两向的拱在此交叠，荷载从屋面转向柱身。</li>
+      <li>华拱是唯一向外出跳的构件 —— 出跳多少，屋檐就能向外探出多少。</li>
+      <li>散斗三点共面，把拱端的力摊开；缺一只，上层拱就会倾侧。</li>
+    </ul>
+    <div class="row2">
+      <button class="mini" id="btnAgain">再来一次</button>
+      <a class="mini primary" href="dashboard.html">查看记录</a>
+    </div>
+  </div>
+</div>
+
+<script src="vendor/three.min.js"></script>
+<script src="vendor/OrbitControls.js"></script>
+<script src="vendor/CopyShader.js"></script>
+<script src="vendor/LuminosityHighPassShader.js"></script>
+<script src="vendor/EffectComposer.js"></script>
+<script src="vendor/RenderPass.js"></script>
+<script src="vendor/ShaderPass.js"></script>
+<script src="vendor/UnrealBloomPass.js"></script>
+<script src="vendor/RoomEnvironment.js"></script>
+<script src="vendor/SimplexNoise.js"></script>
+<script src="vendor/SSAOShader.js"></script>
+<script src="vendor/SSAOPass.js"></script>
+<script src="js/kit.js"></script>
+<script src="js/grades.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
+
+
